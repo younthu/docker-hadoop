@@ -16,8 +16,34 @@ services:
   datanode:
     image: bde2020/hadoop-datanode:2.0.0-hadoop3.1.1-java8
     container_name: datanode
+    depends_on:
+      - namenode
     volumes:
-      - hadoop_datanode:/hadoop/dfs/data
+      - hadoop_datanode1:/hadoop/dfs/data
+    environment:
+      SERVICE_PRECONDITION: "namenode:9870"
+    env_file:
+      - ./hadoop.env
+  
+  datanode2:
+    image: bde2020/hadoop-datanode:2.0.0-hadoop3.1.1-java8
+    container_name: datanode2
+    depends_on:
+      - namenode
+    volumes:
+      - hadoop_datanode2:/hadoop/dfs/data
+    environment:
+      SERVICE_PRECONDITION: "namenode:9870"
+    env_file:
+      - ./hadoop.env
+  
+  datanode3:
+    image: bde2020/hadoop-datanode:2.0.0-hadoop3.1.1-java8
+    container_name: datanode3
+    depends_on:
+      - namenode
+    volumes:
+      - hadoop_datanode3:/hadoop/dfs/data
     environment:
       SERVICE_PRECONDITION: "namenode:9870"
     env_file:
@@ -26,22 +52,39 @@ services:
   resourcemanager:
     image: bde2020/hadoop-resourcemanager:2.0.0-hadoop3.1.1-java8
     container_name: resourcemanager
+    depends_on:
+      - namenode
+      - datanode
+      - datanode2
+      - datanode3
     environment:
       SERVICE_PRECONDITION: "namenode:9870 datanode:9864"
     env_file:
       - ./hadoop.env
+    ports:
+      - "8089:8088"
 
   nodemanager1:
     image: bde2020/hadoop-nodemanager:2.0.0-hadoop3.1.1-java8
-    container_name: nodemanager
+    container_name: nodemanager1
     environment:
       SERVICE_PRECONDITION: "namenode:9870 datanode:9864 resourcemanager:8088"
+    depends_on:
+      - namenode
+      - datanode
+      - datanode2
+      - datanode3
     env_file:
       - ./hadoop.env
   
   historyserver:
     image: bde2020/hadoop-historyserver:2.0.0-hadoop3.1.1-java8
     container_name: historyserver
+    depends_on:
+      - namenode
+      - datanode
+      - datanode2
+      - datanode3
     environment:
       SERVICE_PRECONDITION: "namenode:9870 datanode:9864 resourcemanager:8088"
     volumes:
@@ -51,5 +94,7 @@ services:
   
 volumes:
   hadoop_namenode:
-  hadoop_datanode:
+  hadoop_datanode1:
+  hadoop_datanode2:
+  hadoop_datanode3:
   hadoop_historyserver:
