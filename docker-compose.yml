@@ -24,6 +24,8 @@ services:
       SERVICE_PRECONDITION: "namenode:9870"
     env_file:
       - ./hadoop.env
+    ports:
+      - 9864:9864
   
   datanode2:
     image: bde2020/hadoop-datanode:2.0.0-hadoop3.1.1-java8
@@ -36,6 +38,8 @@ services:
       SERVICE_PRECONDITION: "namenode:9870"
     env_file:
       - ./hadoop.env
+    ports:
+      - 9865:9864
   
   datanode3:
     image: bde2020/hadoop-datanode:2.0.0-hadoop3.1.1-java8
@@ -48,6 +52,8 @@ services:
       SERVICE_PRECONDITION: "namenode:9870"
     env_file:
       - ./hadoop.env
+    ports:
+      - 9866:9864
   
   resourcemanager:
     image: bde2020/hadoop-resourcemanager:2.0.0-hadoop3.1.1-java8
@@ -76,6 +82,8 @@ services:
       - datanode3
     env_file:
       - ./hadoop.env
+    ports:
+      - "8042:8042"
   
   historyserver:
     image: bde2020/hadoop-historyserver:2.0.0-hadoop3.1.1-java8
